@@ -71,7 +71,6 @@ def create_book():
     db.session.commit()
     return jsonify({"message": "Book created successfully"})    
 
-
 @app.route("/books/<int:book_id>", methods=["PUT"])
 def update_book(book_id):
     data = request.get_json()
@@ -92,3 +91,16 @@ def update_book(book_id):
         return jsonify({"message": "Book updated successfully"})
     else:
         return jsonify({"error": "Book not found"}), 404
+    
+@app.route("/books/<int:book_id>", methods=["DELETE"])
+def delete_book(book_id):
+    book = Book.query.get(book_id)
+    if book:
+        db.session.delete(book)
+        db.session.commit()
+        return jsonify({"message": "Book deleted successfully"})
+    else:
+        return jsonify({"error": "Book not found"}), 404
+
+if __name__ == "__main__":
+    app.run(debug=True)
