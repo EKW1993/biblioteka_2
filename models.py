@@ -13,3 +13,7 @@ class Book(db.Model):
             'authors': [author.name for author in self.authors],
             'borrowed': [borrow.returned for borrow in self.borrowed]
         }
+
+class Author(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
