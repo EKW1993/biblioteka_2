@@ -52,3 +52,21 @@ def get_book(book_id):
         return jsonify(book.to_dict())
     else:
         return jsonify({"error": "Book not found"}), 404
+    
+@app.route("/books", methods=["POST"])
+def create_book():
+    data = request.get_json()
+    authors = []
+    if 'authors' in data:
+        author_names = data.pop('authors')
+        for author_name in author_names:
+            author = Author.query.filter_by(name=author_name).first()
+            if not author:
+                author = Author(name=author_name)
+                db.session.add(author)
+            authors.append(author)
+    book = Book(**data)
+    book.authors = authors
+    db.session.add(book)
+    db.session.commit()
+    return jsonify({"message": "Book created successfully"})    
