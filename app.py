@@ -70,3 +70,25 @@ def create_book():
     db.session.add(book)
     db.session.commit()
     return jsonify({"message": "Book created successfully"})    
+
+
+@app.route("/books/<int:book_id>", methods=["PUT"])
+def update_book(book_id):
+    data = request.get_json()
+    book = Book.query.get(book_id)
+    if book:
+        authors = []
+        if 'authors' in data:
+            author_names = data.pop('authors')
+            for author_name in author_names:
+                author = Author.query.filter_by(name=author_name).first()
+                if not author:
+                    author = Author(name=author_name)
+                    db.session.add(author)
+                authors.append(author)
+        book.title = data.get('title', book.title)
+        book.authors = authors
+        db.session.commit()
+        return jsonify({"message": "Book updated successfully"})
+    else:
+        return jsonify({"error": "Book not found"}), 404
