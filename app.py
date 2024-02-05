@@ -40,3 +40,15 @@ class Borrow(db.Model):
 def get_all_books():
     books = Book.query.all()
     return jsonify([book.to_dict() for book in books])
+@app.route("/books", methods=["GET"])
+def get_all_books():
+    books = Book.query.all()
+    return jsonify([book.to_dict() for book in books])
+
+@app.route("/books/<int:book_id>", methods=["GET"])
+def get_book(book_id):
+    book = Book.query.get(book_id)
+    if book:
+        return jsonify(book.to_dict())
+    else:
+        return jsonify({"error": "Book not found"}), 404
